@@ -35,6 +35,7 @@ def run() -> None:
 
     board = empty_board()
     game_started = False
+    current_player = 1
     start_button_rect = pygame.Rect((width - button_width) // 2, top_margin + board_height + button_gap, button_width, button_height)
 
     running = True
@@ -43,16 +44,28 @@ def run() -> None:
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mouse_x, mouse_y = event.pos
+
                 if start_button_rect.collidepoint(event.pos):
                     if not game_started:
                         board = empty_board()
                         game_started = True
+                        current_player = 1
                     else:
                         board = empty_board()
                         game_started = False
                        # player_forfeit()
+                elif game_started and click_on_board(mouse_x, mouse_y):
+                    column = get_column(mouse_x)
+                    if column is not None:
+                        row = get_open_row(board, column)
+                        if row is not None:
+                            board[row][column] = current_player
+                            current_player = 2 if current_player == 1 else 1
+                            #ADD AI COLUMN UPDATE HERE
 
         screen.fill(background)
+        draw_turn_text(screen, font, game_started, current_player)
         draw_board(screen, board)
         draw_start_button(screen, font, start_button_rect, game_started)
         pygame.display.flip()
@@ -100,6 +113,48 @@ def draw_start_button(screen, font, button_rect, game_started):
     label_x = button_rect.centerx - label_surface.get_width() // 2
     label_y = button_rect.centery - label_surface.get_height() // 2
     screen.blit(label_surface, (label_x, label_y))
+
+def draw_turn_text(screen, font, game_started, current_player):
+    if not game_started:
+        label = "Press Start Game!"
+        color = subtext
+    else:
+        label = f"Player {current_player}'s turn!"
+        color = player1_slot if current_player == 1 else player2_slot
+
+    label_surface = font.render(label, True, color)
+    x = (width - label_surface.get_width()) // 2
+    y = 60
+    screen.blit(label_surface, (x, y))
+
+def click_on_board(mouse_x, mouse_y):
+    board_x = (width - board_width) // 2
+    board_y = top_margin
+
+    return {
+        board_x <= mouse_x < board_x + board_width
+        and
+        board_y <= mouse_y < board_y + board_height
+    }
+
+def get_column(mouse_x):
+    board_x = (width - board_width) // 2
+    relative_x = mouse_x - board_x - board_padding
+
+    if relative_x < 0:
+        return None
+
+    column = relative_x // cell_size
+
+    if 0 <= column < columns:
+        return int(column)
+    return None
+
+def get_open_row(board, column):
+    for row in range(rows - 1, -1, -1):
+        if board[row][column] == 0:
+            return row
+    return None
 
 def empty_board():
     board = [
