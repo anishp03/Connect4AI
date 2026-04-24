@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 
+from connect4.ai import predictColumn
 from connect4.logic.logic import (
     ROWS,
     COLUMNS,
@@ -107,8 +108,25 @@ def run() -> None:
                             result_msg = "Draw!"
                             game_started = False
                         else :
-                            current_player = PLAYER2 if current_player == PLAYER1 else PLAYER1
-                            # ADD AI MOVE HERE LATER
+                            current_player = PLAYER2
+                            aiColumn = predictColumn(board)
+
+                            if aiColumn is not None and valid_move(board, aiColumn):
+                                place_piece(board, aiColumn, PLAYER2)
+                                status = game_status(board)
+
+                                if status == "player2_win":
+                                    player2_score += 1
+                                    save_scores(player1_score, player2_score, draw_score)
+                                    result_msg = "AI Wins!"
+                                    game_started = False
+                                elif status == "draw":
+                                    draw_score += 1
+                                    save_scores(player1_score, player2_score, draw_score)
+                                    result_msg = "Draw!"
+                                    game_started = False
+                                else:
+                                    current_player = PLAYER1
 
         screen.fill(background)
         draw_turn_text(screen, font, game_started, current_player, result_msg)
