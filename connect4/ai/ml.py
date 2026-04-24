@@ -48,10 +48,12 @@ def trainFromDataset(csvPath, modelPath=modelPath):
 
     data = pd.read_csv(csvPath)
     features, labels = prepareTrainingData(data)
+    featureValues = features.to_numpy()
+    labelValues = labels.to_numpy()
 
     xTrain, xTest, yTrain, yTest = trainTestSplit(
-        features,
-        labels,
+        featureValues,
+        labelValues,
         test_size=0.2,
         random_state=42,
         stratify=labels if labels.nunique() > 1 else None,
@@ -146,7 +148,7 @@ class Connect4HybridPredictor:
         if model is None:
             return 0
 
-        features = [boardToFeatures(board)]
+        features = modelFeatures(model, board)
 
         if hasattr(model, "predict_proba"):
             classes = list(model.classes_)
@@ -177,6 +179,14 @@ def moveWins(board, column, piece):
     testBoard = copyBoard(board)
     placed = place_piece(testBoard, column, piece)
     return placed and check_win(testBoard, piece)
+
+
+def modelFeatures(model, board):
+    features = [boardToFeatures(board)]
+    if hasattr(model, "feature_names_in_"):
+        pd = importPandas()
+        return pd.DataFrame(features, columns=model.feature_names_in_)
+    return features
 
 
 def findLabelColumn(columns):
