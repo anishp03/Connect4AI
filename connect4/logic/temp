@@ -1,0 +1,76 @@
+ROWS = 6
+COLUMNS = 7
+
+EMPTY = 0
+PLAYER1 = 1
+PLAYER2 = 2
+
+def empty_board():
+  return[[0 for _ in range(COLUMNS)] for _ in range(ROWS)]
+
+def get_open_row(board, column):
+  for row in range(ROWS -1, -1, -1):
+    if board[row][column] == EMPTY:
+      return row
+  return None
+
+def valid_move(board, column):
+  return (
+    0 <= column < COLUMNS and
+    board[0][column] == EMPTY
+)
+
+def place_piece(board, column, player):
+  row = get_open_row(board, column)
+
+  if row is None:
+    return False
+
+  board[row][column] = player
+  return True
+
+def available_moves(board):
+  return [c for c in range(COLUMNS) if valid_move(board, c)]
+
+def board_full(board):
+  return len(available_moves(board)) == 0
+
+def check_win(board, piece):
+
+# for horizontal win
+for row in range(ROWS):
+  for col in range(COLUMNS - 3):
+    if all(board[row][col + i] == piece for i in range(4)):
+      return True
+
+# for vertical win
+for row in range(ROWS - 3):
+  for col in range(COLUMNS):
+    if all(board[row + i][col] == piece for i in range(4)):
+      return True
+
+# diagonal down-right
+for row in range(ROWS - 3):
+  for col in range(COLUMNS - 3):
+    if all(board[row + i][col + i] == piece for i in range(4)):
+      return True
+
+# diagonal up-right
+for row in range(3, ROWS):
+  for col in range(COLUMNS - 3):
+    if all(board[row - i][col + i] == piece for i in range(4)):
+      return True
+
+return False
+
+def game_status(board):
+    if check_win(board, PLAYER1):
+        return "player1_win"
+
+    if check_win(board, PLAYER2):
+        return "player2_win"
+
+    if board_full(board):
+        return "draw"
+
+    return "continue"
