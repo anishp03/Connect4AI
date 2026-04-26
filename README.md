@@ -1,6 +1,100 @@
 # Connect4AI
 Connect4AI is a Python desktop Connect 4 game where a human player competes against a machine-learned AI opponent.
 
+## GUI (Anish Patel)
+
+The GUI is implemented in `connect4/gui/app.py` using Pygame. It is responsible for creating the game window, drawing the Connect 4 board, handling mouse input, showing turn and result text, and displaying the scoreboard.
+
+### GUI Responsibilities
+
+- render the board and pieces
+
+- convert mouse clicks into board column selections
+
+- display Human / AI turn text
+
+- display win / draw messages
+
+- load and display persistent scores from `connect4/scores.json`
+
+### GUI Process Flow
+
+1. Launch the game window from `main.py`.
+
+2. Load the saved scoreboard from `scores.json`.
+
+3. Wait for the user to press **Start Game**.
+
+4. Draw the empty board and show the current turn.
+
+5. When the player clicks a column, convert the click position into a board column index.
+
+6. Pass that column into the game logic layer.
+
+7. Redraw the board after the move is applied.
+
+8. Update the result text and scoreboard if the round ends.
+
+---
+
+## Game Logic
+
+The game rules are implemented in `connect4/logic/logic.py`. This file acts as the rule engine for Connect 4 and keeps the GUI separated from the actual board logic.
+
+### Game Logic Responsibilities
+
+- create a new empty 6x7 board
+
+- determine whether a move is legal
+
+- place a piece in the lowest open row of a selected column
+
+- return all currently available columns
+
+- detect whether the board is full
+
+- check horizontal, vertical, and diagonal wins
+
+- return the current game status
+
+### Core Functions
+
+- `empty_board()` creates a fresh board
+
+- `valid_move(board, column)` checks whether a move is legal
+
+- `place_piece(board, column, player)` applies a move to the board
+
+- `available_moves(board)` returns all valid columns
+
+- `board_full(board)` checks if no more moves are possible
+
+- `check_win(board, piece)` checks for a four-in-a-row
+
+- `game_status(board)` returns whether the game should continue or end
+
+### Game Logic Process Flow
+
+1. The GUI sends the selected column to the logic layer.
+
+2. The logic checks whether the move is valid.
+
+3. If valid, the piece is placed in the correct row.
+
+4. The board is checked for:
+
+   - a Player 1 / Human win
+
+   - a Player 2 / AI win
+
+   - a draw
+
+   - or continuation
+
+5. The result is returned to the GUI so the interface can update the board, score, and round state.
+
+---
+
 ## Machine Learning AI (Nathan Daigle)
 
 The AI is trained from a Connect 4 CSV dataset. Each board state is converted into 42 numeric features, one for each slot on the board, and the model learns to predict which column the AI should play next.

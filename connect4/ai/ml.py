@@ -90,7 +90,7 @@ def prepareTrainingData(data):
     labelColumn = findLabelColumn(data.columns)
     boardColumns = findBoardColumns(data.columns, labelColumn)
 
-    features = data.loc[:, boardColumns].applymap(normalizeCell)
+    features = data.loc[:, boardColumns].map(normalizeCell)
 
     if labelColumn:
         labels = data[labelColumn].map(normalizeLabel)
