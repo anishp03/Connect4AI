@@ -124,7 +124,7 @@ Board values are normalized as:
 - `1`, `human`, `player1`, or `o` for the human player.
 - `2`, `ai`, `player2`, or `x` for the AI player.
 
-## Training
+## How to Train and Run
 
 Install dependencies:
 
