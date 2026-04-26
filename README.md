@@ -1,6 +1,10 @@
 # Connect4AI
 Connect4AI is a Python desktop Connect 4 game where a human player competes against a machine-learned AI opponent.
 
+## Documents
+
+All project documents, including the final report and the Individual Contribution Report are located in the `documents/` folder at the root of this project.
+
 ## GUI (Anish Patel)
 
 The GUI is implemented in `connect4/gui/app.py` using Pygame. It is responsible for creating the game window, drawing the Connect 4 board, handling mouse input, showing turn and result text, and displaying the scoreboard.
@@ -125,6 +129,12 @@ Board values are normalized as:
 - `2`, `ai`, `player2`, or `x` for the AI player.
 
 ## How to Train and Run
+
+Enter the Root Directory of this Project "/Project4":
+
+```bash
+cd /Project4
+```
 
 Install dependencies:
 
